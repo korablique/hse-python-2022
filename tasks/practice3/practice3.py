@@ -1,5 +1,7 @@
 from pathlib import Path
 from typing import Dict, Any, List, Optional
+import string
+import csv
 
 
 def count_words(text: str) -> Dict[str, int]:
@@ -26,9 +28,17 @@ def count_words(text: str) -> Dict[str, int]:
              значение - количество вхождений слов в текст
     """
 
-    # пиши свой код здесь
-
-    return {}
+    text_without_punctuation = text.translate(str.maketrans('', '', string.punctuation))
+    words = text_without_punctuation.split(' ')
+    words = [word.lower() for word in words]
+    result = {}
+    for word in words:
+        if word.isalpha():
+            if result.get(word):
+                result[word] += 1
+            else:
+                result.update({word: 1})
+    return result
 
 
 def exp_list(numbers: List[int], exp: int) -> List[int]:
@@ -40,9 +50,7 @@ def exp_list(numbers: List[int], exp: int) -> List[int]:
     :return: список натуральных чисел
     """
 
-    # пиши свой код здесь
-
-    return []
+    return [pow(number, exp) for number in numbers]
 
 
 def get_cashback(operations: List[Dict[str, Any]], special_category: List[str]) -> float:
@@ -105,6 +113,16 @@ def csv_reader(header: str) -> int:
     :return: количество уникальных элементов в столбце
     """
 
-    # пиши свой код здесь
+    with open(get_path_to_file(), newline='') as f:
+        reader = csv.reader(f)
+        headers = next(reader)
+        header_index = -1
+        for i in range(len(headers)):
+            if headers[i] == header:
+                header_index = i
+                break
 
-    return 0
+        unique_elements = set()
+        for row in reader:
+            unique_elements.add(row[header_index])
+    return len(unique_elements)
